@@ -7,8 +7,13 @@ from party import createParties
 
 import json
 from flask import Flask
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 #create the state
 realms = CreateRealms(10);
@@ -17,18 +22,22 @@ politicians = generatePoliticians(10);
 parties = createParties(politicians, 5)
 
 @app.route('/')
+@cross_origin()
 def index():
     return json.dumps({})
 
 @app.route('/realms')
+@cross_origin()
 def getRealms():
     return json.dumps([r.serialize() for r in realms])
 
 @app.route('/politicians')
+@cross_origin()
 def getPoliticians():
     return json.dumps([p.serialize() for p in politicians])
 
 @app.route('/parties')
+@cross_origin()
 def getParties():
     return json.dumps([p.serialize() for p in parties])
 
