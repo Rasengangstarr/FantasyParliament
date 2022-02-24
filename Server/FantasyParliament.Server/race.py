@@ -1,12 +1,11 @@
-from stances import Stances
-
-class Race:
-    def __init__(self, name, stances):
-        self.name = name
-        self.stances = stances
-
-    def serialize(self):
-        return {'name': self.name,
-                'stances': self.stances.serialize()}
+from enum import IntEnum
 
 
+class Races(IntEnum):
+    ELF = 1
+    ORC = 2
+    DWARF = 3
+    HUMAN = 4
+
+
+raceNames = { Races.ELF: "Elf", Races.HUMAN:"Human", Races.ORC:"Orc", Races.DWARF:"Dwarf"}
