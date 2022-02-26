@@ -16,8 +16,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 #create the state
-realms = CreateRealms(10);
-politicians = generatePoliticians(10);
+realms = CreateRealms(52);
+politicians = generatePoliticians(100);
 
 parties = createParties(politicians, 5)
 
@@ -40,6 +40,11 @@ def getPoliticians():
 @cross_origin()
 def getParties():
     return json.dumps([p.serialize() for p in parties])
+
+@app.route('/parties/detailed')
+@cross_origin()
+def getPartiesDetailed():
+    return json.dumps([p.serialize_detailed(politicians) for p in parties])
 
 app.run()
 

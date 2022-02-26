@@ -19,6 +19,7 @@ class Politician:
         self.generateStances(self.background, self.race, 2) 
         self.knownEvents = []
         self.relationships = []
+        self.party = 0 
 
     def serialize(self):
         return {'name': self.name,
@@ -28,13 +29,14 @@ class Politician:
                 'intelligence': self.intelligence,
                 'race': self.race,
                 'background': self.background,
+                'party': self.party,
                 'stances': self.stances.serialize()}
 
     def generateStances(self, background, race, modifier):
-        self.stances.industry = backgroundStances[background].industry + racialStances[race].industry + random.randint(0,modifier)/10 
-        self.stances.war = backgroundStances[background].war + racialStances[race].war + random.randint(0,modifier)/10 
-        self.stances.nature = backgroundStances[background].nature + racialStances[race].nature + random.randint(0,modifier)/10
-        self.stances.magic = backgroundStances[background].magic + racialStances[race].magic + random.randint(0,modifier)/10 
+        self.stances.industry = backgroundStances[background].industry + racialStances[race].industry  
+        self.stances.war = backgroundStances[background].war + racialStances[race].war 
+        self.stances.nature = backgroundStances[background].nature + racialStances[race].nature 
+        self.stances.magic = backgroundStances[background].magic + racialStances[race].magic  
     
 
 def generatePoliticians(countOfEach):

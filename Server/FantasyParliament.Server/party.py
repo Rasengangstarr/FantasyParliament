@@ -13,9 +13,15 @@ class Party:
         self.stances = stances
     
     def serialize(self):
-            return {'id': self.id,
-                    'name': self.name,
-                    'stances': self.stances.serialize()}
+        return {'id': self.id,
+                'name': self.name,
+                'stances': self.stances.serialize()}
+
+    def serialize_detailed(self, members):
+        return {'id': self.id,
+                'name': self.name,
+                'stances': self.stances.serialize(),
+                'members': [m.serialize() for m in members if m.party == self.id]}
 
 
 def convertMembersToDataFrame(members):
@@ -32,7 +38,7 @@ def findStanceCentroids(members, numParties):
     kmeans = KMeans(n_clusters=numParties, random_state=0).fit(
         df[cluster_dims].values)
     df['party'] = kmeans.labels_
-    return df
+    return (kmeans, df)
 
 
 def createParties(members, numParties):
@@ -40,10 +46,14 @@ def createParties(members, numParties):
     partyNames = requests.get(
         "https://story-shack-cdn-v2.glitch.me/generators/clan-name-generator?count="+str(numParties)).json()["data"]
 
-    df = findStanceCentroids(members, numParties)
+    (kmeans, df) = findStanceCentroids(members, numParties)
     parties = []
+    for i in range(0, len(members)):
+        members[i].party = df.iloc[i]["party"]
     for i in range(0, numParties):
         parties.append(Party(i, partyNames[i]["name"], Stances(
-            nature=df.iloc[i]["nature"], industry=df.iloc[i]["industry"], war=df.iloc[i]["war"], magic=df.iloc[i]["magic"])))
-    
+            nature=kmeans.cluster_centers_[i][1], industry=kmeans.cluster_centers_[i][0], war=kmeans.cluster_centers_[i][2], magic=kmeans.cluster_centers_[i][3])))
     return parties
+            
+    
+    
