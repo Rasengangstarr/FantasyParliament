@@ -20,5 +20,5 @@ module.exports = {
      'nord-purple':'#B48EAD'},
     extend: {},
   },
-  plugins: [],
+  plugins: [require('tw-elements/dist/plugin')],
 }

@@ -62,18 +62,25 @@ def CreateRealms(count):
 
         if realmNoiseValue < -0.15:
             realmType = 0
+            realms.append(Realm(i, names[i], row, col, realmType, random.randint(100, 1000),
+                    RacePops(elfPop=getRandPop(), orcPop=getRandBoostedPop(), humanPop=getRandPop(), dwarfPop=getRandPop())))
         elif realmNoiseValue < 0:
             realmType = 1
+            realms.append(Realm(i, names[i], row, col, realmType, random.randint(100, 1000),
+                    RacePops(elfPop=getRandPop(), orcPop=getRandPop(), humanPop=getRandBoostedPop(), dwarfPop=getRandPop())))
         elif realmNoiseValue < 0.15:
             realmType = 2
+            realms.append(Realm(i, names[i], row, col, realmType, random.randint(100, 1000),
+                    RacePops(elfPop=getRandBoostedPop(), orcPop=getRandPop(), humanPop=getRandPop(), dwarfPop=getRandPop())))
         else:
             realmType = 3 
+            realms.append(Realm(i, names[i], row, col, realmType, random.randint(100, 1000),
+                    RacePops(elfPop=getRandPop(), orcPop=getRandPop(), humanPop=getRandPop(), dwarfPop=getRandBoostedPop())))
         
-
-        realms.append(Realm(i, names[i], row, col, realmType, random.randint(100, 1000),
-                    RacePops(elfPop=getRandPop(), orcPop=getRandPop(), humanPop=getRandPop(), dwarfPop=getRandPop())))
         col = col + 1
     return realms
 
 def getRandPop():
     return random.randint(1, 10)
+def getRandBoostedPop():
+    return random.randint(10, 20)

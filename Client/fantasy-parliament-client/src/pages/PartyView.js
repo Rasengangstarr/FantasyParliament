@@ -1,4 +1,4 @@
-import PartyNavIcon from "../components/PartyNavIcon";
+import NavIcon from "../components/NavIcon";
 import PartyMemberCard from "../components/PartyMemberCard";
 
 import { ReactComponent as HyenaIcon } from "../resources/hyena-head.svg"
@@ -29,7 +29,9 @@ function PartyView() {
             p.industryWidth = (p.stances.industry / stanceTotal) * 100;
             return p;
           });
-          fetchParties(result.sort((a,b) => a.id - b.id));
+          result = result.sort((a,b) => a.id - b.id);
+          fetchParties(result);
+          setSelectedParty(result[0]);
 
         },
         (error) => {
@@ -47,16 +49,7 @@ function PartyView() {
  
   return (
     <div>
-      <div className="w-20 h-screen bg-nord-dark-1 p-1 top-0 left-0 fixed">
-        <nav>
-        <PartyNavIcon iconId={0} onIconClicked={selectParty} partyName={Parties[0].name} icon={<HyenaIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
-        <PartyNavIcon iconId={1} onIconClicked={selectParty} partyName={Parties[1].name} icon={<CloakedFigureIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
-        <PartyNavIcon iconId={2} onIconClicked={selectParty} partyName={Parties[2].name} icon={<ElysiumShadeIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
-        <PartyNavIcon iconId={3} onIconClicked={selectParty} partyName={Parties[3].name} icon={<NectarIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
-        <PartyNavIcon iconId={4} onIconClicked={selectParty} partyName={Parties[4].name} icon={<PhilosopherBustIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
-        </nav>
-      </div>
-      <div className="fixed w-96 left-20 px-4 py-4">
+      <div className="w-96 left-40 h-fit px-4 py-4 absolute">
         <div className="text-2xl font-bold">
           {SelectedParty.name} 
         </div>
@@ -68,10 +61,22 @@ function PartyView() {
                     <div className="bg-nord-yellow h-5 absolute" style={{left: SelectedParty.industryLeft+"%", width: SelectedParty.industryWidth+"%"}}/>
                 </div>
           </div>
+          <div >
           {SelectedParty.members.map((m,i) => (
             <PartyMemberCard key={i} member={m} />
           ))}
+          </div>
       </div>
+      <div className="w-20 left-20 bg-nord-dark-1 p-1 h-screen top-0 fixed ">
+        <nav>
+        <NavIcon iconId={0} onIconClicked={selectParty} name={Parties[0].name} icon={<HyenaIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
+        <NavIcon iconId={1} onIconClicked={selectParty} name={Parties[1].name} icon={<CloakedFigureIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
+        <NavIcon iconId={2} onIconClicked={selectParty} name={Parties[2].name} icon={<ElysiumShadeIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
+        <NavIcon iconId={3} onIconClicked={selectParty} name={Parties[3].name} icon={<NectarIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
+        <NavIcon iconId={4} onIconClicked={selectParty} name={Parties[4].name} icon={<PhilosopherBustIcon className="block m-auto fill-nord-frost-2 group-hover:transition-all group-hover:fill-nord-red" /> }/> 
+        </nav>
+      </div>
+
     </div>
   );
 }

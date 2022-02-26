@@ -27,7 +27,7 @@ function PartyMemberCard(props) {
         storeStancePercentages(stancesP);
     }, [props.member, props.member.stances]);
     return(
-        <div className="m-1 w-42 border-nord-dark-1 border-solid border-2">
+        <div className="m-1 w-42 border-nord-dark-1 p-2">
             {props.member.race === 1 && <ElfFace className="fill-nord-light-3 inline mx-1" />}
             {props.member.race === 2 && <OrcFace className="fill-nord-light-3 inline mx-1" />}
             {props.member.race === 3 && <DwarfFace className="fill-nord-light-3 inline mx-1" />}
