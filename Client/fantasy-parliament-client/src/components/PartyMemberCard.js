@@ -40,6 +40,11 @@ function PartyMemberCard(props) {
             <div className="inline pl-1">
                 {props.member.name}
             </div>
+            <div className="pl-1 italic">{props.member.job == 1 && "MP"}</div>
+            <div className="pl-1 italic">{props.member.job == 4 && "Leader"}</div>
+            <div className="pl-1 italic">{props.member.job == 3 && "Deputy"}</div>
+            <div className="pl-1 italic">{props.member.job == 2 && "Election Officer"}</div>
+
             <div className="m-1">
                 <div className="rounded-full h-2.5 relative">
                     <div className="bg-nord-red h-2.5 absolute" style={{left:StancePercentages.war.left+"%", width: StancePercentages.war.width+"%"}}/>

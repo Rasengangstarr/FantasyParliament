@@ -62,7 +62,7 @@ function PartyView() {
                 </div>
           </div>
           <div >
-          {SelectedParty.members.map((m,i) => (
+          {SelectedParty.members.sort((a,b) => b.job - a.job).map((m,i) => (
             <PartyMemberCard key={i} member={m} />
           ))}
           </div>

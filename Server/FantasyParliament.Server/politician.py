@@ -1,6 +1,7 @@
 from stances import racialStances
 from stances import backgroundStances
 from stances import Stances
+from job import Jobs
 from race import Races 
 import requests
 import random
@@ -15,11 +16,13 @@ class Politician:
         self.charisma = charisma
         self.intelligence = intelligence
         self.background = background
+        self.job = Jobs.CANDIDATE 
         self.stances = Stances(1,1,1,1) 
         self.generateStances(self.background, self.race, 2) 
         self.knownEvents = []
         self.relationships = []
-        self.party = 0 
+        self.party = 0
+        self.partyName = ""
 
     def serialize(self):
         return {'name': self.name,
@@ -27,16 +30,24 @@ class Politician:
                 'steadfastness': self.steadfastness,
                 'charisma': self.charisma,
                 'intelligence': self.intelligence,
-                'race': self.race,
-                'background': self.background,
+                'race': self.race, 'background': self.background,
                 'party': self.party,
+                'job' : self.job,
+                'partyName': self.partyName,
                 'stances': self.stances.serialize()}
 
     def generateStances(self, background, race, modifier):
         self.stances.industry = backgroundStances[background].industry + racialStances[race].industry  
         self.stances.war = backgroundStances[background].war + racialStances[race].war 
         self.stances.nature = backgroundStances[background].nature + racialStances[race].nature 
-        self.stances.magic = backgroundStances[background].magic + racialStances[race].magic  
+        self.stances.magic = backgroundStances[background].magic + racialStances[race].magic
+
+    def handleElectionCalled(self, members, realms):
+        if self.job == Jobs.ELECTION_OFFICER:
+            membersOfParty = [m for m in members if m.party == self.party]
+            for i, r in enumerate(realms):
+                if (i < len(membersOfParty)): 
+                    r.candidates.append(membersOfParty[i])
     
 
 def generatePoliticians(countOfEach):
