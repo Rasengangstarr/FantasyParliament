@@ -63,7 +63,7 @@ def mainLoop(events, politicians, realms):
         if hour == 1 and day == 0:
             eventsForTick.append(declareElection(eId, dateStr))
             eId += 1
-        elif hour == 0 and day == 10:
+        elif hour == 0 and day == 1:
             eventsForTick.append(runElection(eId, dateStr))
             eId += 1
         eventsToRespondTo = []

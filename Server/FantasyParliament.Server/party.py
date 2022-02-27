@@ -59,7 +59,7 @@ def createParties(members, numParties):
         partyMembers[2].job = Jobs.ELECTION_OFFICER
 
         parties.append(Party(i, partyNames[i]["name"], Stances(
-            nature=kmeans.cluster_centers_[i][1], industry=kmeans.cluster_centers_[i][0], war=kmeans.cluster_centers_[i][2], magic=kmeans.cluster_centers_[i][3])))
+            nature=kmeans.cluster_centers_[i][3], industry=kmeans.cluster_centers_[i][2], war=kmeans.cluster_centers_[i][0], magic=kmeans.cluster_centers_[i][1])))
     return parties
             
     
