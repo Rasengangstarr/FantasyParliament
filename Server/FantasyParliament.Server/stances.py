@@ -18,7 +18,15 @@ class Stances:
                 'war': self.war,
                 'magic': self.magic}
 
+def diffStances(stance1, stance2):
+    magDiff = abs(stance1.magic - stance2.magic)
+    warDiff = abs(stance1.war - stance2.war)
+    indDiff = abs(stance1.industry - stance2.industry)
+    natDiff = abs(stance1.nature - stance2.nature)
+    return magDiff + warDiff + indDiff + natDiff
+
 racialStances = {
+    Races.NONE: Stances(1,1,1,1),
     Races.ELF: Stances(nature=10, industry=5, war=2, magic=7),
     Races.DWARF: Stances(nature=5, industry=10, war=7, magic=2),
     Races.ORC: Stances(nature=2, industry=7, war=10, magic=5),
@@ -26,6 +34,7 @@ racialStances = {
 }
 
 backgroundStances = {
+    Backgrounds.NONE: Stances(1,1,1,1),
     Backgrounds.CRAFTSMAN: Stances(industry=10, war=2, magic=2, nature=2),
     Backgrounds.MAGE: Stances(industry=2, war=2, nature=2, magic=10),
     Backgrounds.RANGER: Stances(industry=2, nature=10, war=2, magic=2),

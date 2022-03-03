@@ -12,6 +12,8 @@ from politician import Politician
 from event import EventType
 from perlin_noise import PerlinNoise
 
+nonePolitician = Politician(-1, "No Member", 0, 0, 0, 0, 0, 0)
+
 class Realm:
     def __init__(self, id, name, row, column, realmType, population, racePops):
         self.id = id
@@ -21,7 +23,7 @@ class Realm:
         self.population = population
         self.racePops = racePops
         self.realmType = realmType
-        self.member = -1 
+        self.member = nonePolitician 
         self.candidates = []
 
     def serialize(self):
@@ -42,11 +44,11 @@ class Realm:
             industryDiff = abs(self.racePops.stances.industry - c.stances.industry)
             natureDiff = abs(self.racePops.stances.nature - c.stances.nature)
             votes.append(magicDiff+warDiff+industryDiff+natureDiff)
-        print(votes)
         self.member = self.candidates[votes.index(min(votes))]
 
         if self.member.job == Jobs.CANDIDATE:
             self.member.job = Jobs.MEMBER
+        print(self.member.name + " has been elected to represent " + self.name)
         return Event(id, self.member.name + " has been elected to represent " + self.name, dateStr, EventType.CANDIDATE_ELECTED_TO_REALM, [])
 
 

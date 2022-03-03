@@ -1,11 +1,19 @@
 #!/usr/bin/env python
 # encoding: utf-8
 from gettext import find
+import re
 from realm import CreateRealms
 from politician import generatePoliticians
 from party import createParties
+from policy import Policies
+from policy import Policy
+from policy import generatePolicies
 from event import Event
 from event import EventType
+from flask import request
+from stances import diffStances
+
+from random import randint
 import threading
 
 import json
@@ -25,6 +33,8 @@ politicians = generatePoliticians(100);
 
 parties = createParties(politicians, 5)
 
+policies = generatePolicies()
+
 events = []
 
 nextEventId = 0
@@ -37,17 +47,19 @@ def declareElection(id, dateStr):
     return value
 
 def runElection(id, dateStr):
-    value =  Event(id, "A General Election is occuring!", dateStr, EventType.ELECTION_HAPPENING, [])
+    value =  Event(id, "A General Election is occuring!", dateStr, EventType.ELECTION_STARTED, [])
     print ("Running election")
     return value
 
-def mainLoop(events, politicians, realms):
+def mainLoop(events, politicians, realms, policies):
     eId = 0
     hour = 0
     day = 0
     year = 0
+    electionInProgress = False
     while True:
         eventsForTick = []
+        eventsToRespondTo = []
         #handle time
         hour+=1
         if hour == 24:
@@ -63,24 +75,46 @@ def mainLoop(events, politicians, realms):
         if hour == 1 and day == 0:
             eventsForTick.append(declareElection(eId, dateStr))
             eId += 1
-        elif hour == 0 and day == 1:
+        elif hour == 0 and day == 10:
             eventsForTick.append(runElection(eId, dateStr))
+            electionRIndex = 0
+            electionInProgress = True
             eId += 1
-        eventsToRespondTo = []
+        elif hour == 2 and day == 0:
+            #DEBATE
+            policyToDebate = policies[randint(0,len(policies))-1]
+            memberToRaiseMotion = politicians[0]
+            eventsToRespondTo.append(Event(eId, memberToRaiseMotion.name + " moves to "+ policyToDebate.name, dateStr, EventType.DEBATE_STARTED, [])) 
+            eId += 1
+
         for e in eventsForTick:
+
             if (len(e.targetMembers) == 0):
                 for p in politicians:
                     if e.type == EventType.ELECTION_CALLED:
                         p.handleElectionCalled(politicians, realms)
-                for r in realms:
-                    if e.type == EventType.ELECTION_HAPPENING:
-                        eventsToRespondTo.append(r.handleElection(eId, dateStr))
-                        eId += 1
 
-        events += eventsForTick + eventsToRespondTo
+        if electionInProgress:
+            eventsToRespondTo.append(realms[electionRIndex].handleElection(eId, dateStr))
+            eId += 1
+            electionRIndex += 1
+            if electionRIndex >= len(realms):
+                electionInProgress = False
+
+        for e in eventsToRespondTo:
+            if e.type == EventType.DEBATE_STARTED:
+                for m in politicians:
+                    if diffStances(m.stances, policyToDebate.stances) > 1.4:
+                        eventsForTick.append(Event(eId, m.name + "says THERE'S COLLUSION!", dateStr, EventType.DEBATE_RESPONSE, []))
+                    else:
+                        eventsForTick.append(Event(eId, m.name + "says POGGERS!", dateStr, EventType.DEBATE_RESPONSE, []))
+                    eId += 1
+
+
+        events += eventsToRespondTo + eventsForTick 
         #print ([str(e.id)+" - "+e.name for e in events])
 
-x = threading.Thread(target=mainLoop, args=(events,politicians,realms,)) 
+x = threading.Thread(target=mainLoop, args=(events,politicians,realms,policies,)) 
 x.start()
 
 
@@ -112,7 +146,12 @@ def getPartiesDetailed():
 @app.route('/events')
 @cross_origin()
 def getEvents():
-    return json.dumps([e.serialize() for e in events])
+    fromId = int(request.args.get("from"))
+    return json.dumps([e.serialize() for e in events if e.id > fromId])
+
+@app.route('/events/max')
+@cross_origin()
+def getEventsMax():
+    return str(max([e.id for e in events])) 
 
 app.run()
-
